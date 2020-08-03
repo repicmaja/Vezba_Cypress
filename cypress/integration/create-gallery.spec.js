@@ -1,6 +1,6 @@
 import {EMAIL} from '../fixtures/constants'
 import {authPage} from '../page_object/login.page'
-import {galleryPage} from '../page_object/create-gallery.page'
+import {GalleryPage} from '../page_object/create-gallery.page'
 
 const faker = require('faker');
 
@@ -20,8 +20,8 @@ describe('Create gallery module', () => {
     cy.url().should('eq','https://gallery-app.vivifyideas.com/create')
   })
 
-  it('GA-21, GA-27, GA-34 : Create new gallery valid  ', () => {
-    galleryPage.createGallery( Title, Description, "https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg")
+  it.only('GA-21, GA-27, GA-34 : Create new gallery valid  ', () => {
+    GalleryPage.createGallery( Title, Description, "https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg")
     // cy.get('h1').contains('Create Gallery').should('be.visible')
     // cy.get('#title').type(fakerTitle)
     // cy.get('#description').type(fakerDescription)
@@ -32,7 +32,7 @@ describe('Create gallery module', () => {
   it('My gallery - pagination - load more', () => {
       for(var i=2;i<=11;i++){
         cy.visit('/create')
-        galleryPage.createGallery( 'Test', 'Test galerija', "https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg");
+        galleryPage.createGallery( Title, DEscription, "https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg");
         }
         cy.visit('/my-galleries')
         cy.contains('Load More').should('not.exist')
