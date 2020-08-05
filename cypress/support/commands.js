@@ -40,7 +40,24 @@ Cypress.Commands.add('loginBe', (mejl, pasvord) =>{
     }).
     then((resp)=>{
        expect(resp.body).to.have.property('access_token')
+       localStorage.setItem('user_id', resp.body.user_id)
        localStorage.setItem('token', resp.body.access_token)
        cy.visit('/')
     }) 
   })
+
+  Cypress.Commands.add('Delete',(useCaseid) =>{
+    cy.request({
+      method: 'DELETE',
+      url: Cypress.env('apiUrl') + '/galleries/' + useCaseid,
+          form: true,
+          followRedirect: true,
+          headers:{
+          authorization: `Bearer ${window.localStorage.getItem('token')}`
+          },
+         
+      })
+   
+  })
+  
+  

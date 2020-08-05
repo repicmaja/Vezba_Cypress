@@ -25,26 +25,30 @@ it('Get', () => {
     //   localStorage.setItem('token', resp.body.access_token)
     // })
     cy.loginBe(EMAIL.EXISTING,EMAIL.PASSWORD)
+    
    cy.visit('/create')
     // cy.wait('@stubing')
     //  for(var i=1;i<=10;i++){
     //     cy.visit('/create')
-      GalleryPage.createGallery( Title, Description, "https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg");
-    //     }
-    //cy.get('@stubing').
-    cy.visit('/my-galleries')
-    cy.wait('@stubing')
-    cy.get('@stubing').
-    its('response').then((resp)=>{
-    cy.log(resp.body.galleries[0].id)
-   
-    for(let i=0; i<1; i++) {
-      let useCaseid = resp.body.galleries[i].id
-       cy.Delete(useCaseid)
-    }
+     GalleryPage.createGallery( Title, Description, "https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg");
+    //  }
+    cy.visit('/my-galleries') 
+   cy.wait('@stubing')
+    GalleryPage.picture.eq(0).click()
+    cy.wait(2000)
+    GalleryPage.edit.click()
+    cy.wait(2000)
+    GalleryPage.addImage.click()
+    GalleryPage.image.eq(1).type('https://jetexcdn.sfo2.digitaloceanspaces.com/jetex.com/wp-content/uploads/2019/12/nassau-bahamas-scaled.jpg')
 
-          
-     })
-    })
+    cy.wait(2000)
+  GalleryPage.up.eq(1).click()
+  GalleryPage.submit.click()
+  cy.wait(2000)
+  GalleryPage.desnaStrelica.click()
+  cy.wait(2000)
+  GalleryPage.slika.eq(1).should('have.attr','src' ,'https://www.bautrip.com/images/what-to-visit/bavaro-beach-punta-cana.jpg ')
+  
 })
 
+})
