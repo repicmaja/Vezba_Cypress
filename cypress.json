@@ -1,7 +1,7 @@
 {
-    "baseUrl": "https://gallery-app.vivifyideas.com/",
+    "baseUrl": "https://gradebook.vivifyideas.com/",
     "env": {
-        "apiUrl":"https://gallery-api.vivifyideas.com/api"
+        "apiUrl":"https://gradebook-api.vivifyideas.com/api/"
     }
 }
 

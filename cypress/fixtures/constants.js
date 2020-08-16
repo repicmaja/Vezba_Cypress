@@ -1,4 +1,6 @@
 export const EMAIL = {
-    EXISTING: 'repicmaja@gmail.com',
-    PASSWORD: 'maja1992'
+    EXISTING: 'testiranje001@gmail.com',
+    PASSWORD: 'Maja198592',
+    IME: 'Tester',
+    PREZIME: 'Testeric1'
 }

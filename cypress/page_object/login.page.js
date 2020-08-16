@@ -1,53 +1,67 @@
-export default class Authpage {
+export default class Logpage {
     get email(){
-        return cy.get('#email')
+        return cy.get('.form-control').eq(0)
     }
 
     get password(){
-        return cy.get('#password')
+        return cy.get('.form-control').eq(1)
     }
 
-    get submit(){
-        return cy.get('[type=submit]')
+    get login(){
+        return cy.get('.btn')
     }
 
     get alert(){
         return cy.get('.alert')
     }
-
-    login(mejl,sifra){
+    get signin(){
+        return cy.get('.nav-item').contains('Sign in')
+    }
+    get signout(){
+        return cy.get('.nav-link').contains('Sign out')
+    }
+    get register(){
+        return cy.get('.nav-link').contains('Register')
+    }
+    log(mejl,sifra){
         this.email.type(mejl)
         this.password.type(sifra)
-        this.submit.click()
+        this.login.click()
     }
 
     get firstName(){
-        return cy.get('#first-name')
+        return cy.get('#firstName')
     }
-
+    get pass(){
+        return cy.get('#password')
+    }
     get lastName(){
-        return cy.get('#last-name')
+        return cy.get('#lastName')
     }
 
     get passwordConfirmation(){
-        return cy.get('#password-confirmation')
+        return cy.get('#passwordConfirmation')
     }
 
     get checkBox(){
-        return cy.get('[type=checkbox]')
+        return cy.get('#termsAndConditions')
     }
-
-    register(ime, prezime, mejl,sifra, sifraPotvrda, cekBoks){
+    get mail(){
+        return cy.get('#email')
+    }
+    get submit(){
+        return cy.get('.btn').contains('Submit')
+    }
+    reg(ime,prezime,sifra,sifraPotvrda,mejl){
         this.firstName.type(ime)
         this.lastName.type(prezime)
-        this.email.type(mejl)
-        this.password.type(sifra)
+        this.pass.type(sifra)
         this.passwordConfirmation.type(sifraPotvrda)
-        this.checkBox.click()
+        this.mail.type(mejl)
         this.submit.click()
     }
 
 
 }
 
-export const authPage = new Authpage()
+export const logPage = new Logpage()

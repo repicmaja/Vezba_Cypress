@@ -1,169 +1,191 @@
 import {EMAIL} from '../fixtures/constants'
-import {authPage} from '../page_object/login.page'
-import {randomEmail} from '../utils/'
+import {logPage} from '../page_object/login.page'
 
-const faker = require('faker');
-
-var fakerFirstName = faker.name.firstName();
-var fakerLastName = faker.name.lastName();
-var fakerEmail = faker.internet.email();
-var fakerpassword = faker.internet.password();
 
 describe('Register module', () => {
 
     beforeEach(() => {
-        cy.visit('/register')
+        cy.visit('/')
         cy.server()
-        cy.route(Cypress.env('apiUrl') + '/galleries?page=1&term=').as('galleries')
+        cy.route(Cypress.env('apiUrl') + '/diaries?page=1').as('diaries')
+        logPage.register.click()
       })
+    it('R-1 Register page layout', () => {
+      
+        logPage.firstName.should('be.visible')
+        logPage.lastName.should('be.visible')
+        logPage.email.should('be.visible')
+        logPage.pass.should('be.visible')
+        logPage.passwordConfirmation.should('be.visible')
+        logPage.checkBox.should('be.visible')
+        logPage.submit.should('be.visible')
+    })
+
+
     
-    it('GA-9 : Register page test', () => {
-        //cy.visit('/')
-        //cy.get('.nav-link').contains('Register').click()
-        authPage.firstName.should('be.visible').click()
-        authPage.lastName.should('be.visible').click()
-        authPage.email.should('be.visible').click()
-        authPage.password.should('be.visible').click()
-        authPage.passwordConfirmation.should('be.visible').click()
-        authPage.checkBox.should('be.visible').click()
-        authPage.submit.should('be.visible').click()
-    })
+    it('R-3 : Registration with invalid form of password', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+       
+        logPage.pass.type('MAJAREPIC')
+        logPage.passwordConfirmation.type('MAJAREPIC')
+        logPage.mail.type(EMAIL.EXISTING)
 
-    it('GA-40 : Register page test - First name input field: required', () => {
-        //cy.visit('/register')
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type(fakerEmail)
-        authPage.password.type(fakerpassword)
-        authPage.passwordConfirmation.type(fakerpassword)
-        authPage.checkBox.click()
-        authPage.submit.click()
-        authPage.firstName.then(($input) => {
+        logPage.submit.click()
+        logPage.pass.then(($input) => {
+            expect($input[0].validationMessage).to.eq('Please match the requested format.')
+            })
+
+        })
+    it('R-4 : Registration with invalid form of password', () => {
+     logPage.firstName.type(EMAIL.IME)
+    logPage.lastName.type(EMAIL.PREZIME)
+               
+    logPage.pass.type('MAJAREPIC92')
+   logPage.passwordConfirmation.type('MAJAREPIC92')
+    logPage.mail.type(EMAIL.EXISTING)
+
+    logPage.submit.click()
+    logPage.pass.then(($input) => {
+    expect($input[0].validationMessage).to.eq('Please match the requested format.')
+                    })
+     })
+
+               
+    it('R-5 : Registration with empty first names', () => {
+        logPage.lastName.type(EMAIL.PREZIME)
+        logPage.pass.type(EMAIL.PASSWORD)
+        logPage.passwordConfirmation.type(EMAIL.PASSWORD)
+        logPage.mail.type(EMAIL.EXISTING)
+        
+        logPage.submit.click()
+        logPage.firstName.then(($input) => {
+    expect($input[0].validationMessage).to.eq('Please fill out this field.')
+         })
+                                   
+               
+     })        
+     it('R-6 : Registration with empty last names', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.pass.type(EMAIL.PASSWORD)
+        logPage.passwordConfirmation.type(EMAIL.PASSWORD)
+        logPage.mail.type(EMAIL.EXISTING)
+       
+        logPage.submit.click()
+        logPage.lastName.then(($input) => {
+    expect($input[0].validationMessage).to.eq('Please fill out this field.')
+         })
+                                   
+               
+     })        
+     it('R-7 : Registration with empty password field', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+        logPage.mail.type(EMAIL.EXISTING)
+       
+        logPage.submit.click()
+        logPage.pass.then(($input) => {
+    expect($input[0].validationMessage).to.eq('Please fill out this field.')
+         })          
+     })       
+
+     it('R-8 : Registration with empty email field', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+        logPage.pass.type(EMAIL.PASSWORD)
+        logPage.passwordConfirmation.type(EMAIL.PASSWORD)
+        
+        logPage.submit.click()
+        logPage.mail.then(($input) => {
+    expect($input[0].validationMessage).to.eq('Please fill out this field.')
+         })          
+     })      
+
+     it('R-9 : Registration with unckecked tersm and conditions', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+        logPage.pass.type(EMAIL.PASSWORD)
+        logPage.passwordConfirmation.type(EMAIL.PASSWORD)
+        logPage.mail.type(EMAIL.EXISTING)
+        logPage.submit.click()
+        logPage.checkBox.click()
+        logPage.alert.should('be.visible')
+     })     
+     
+     it('R-10 : Registration with wrong password confirmation', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+        logPage.pass.type(EMAIL.PASSWORD)
+        logPage.passwordConfirmation.type('MAJAaa1992')
+        logPage.mail.type(EMAIL.EXISTING)
+        logPage.submit.click()
+      //pokusala sam da uhvatim alert koji se pojavljuje na razne nacine ali nisam uspela
+        
+     })     
+
+     
+     it('R-11 : Registration password less than 8 letters', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+        logPage.pass.type('Maja19')
+        logPage.passwordConfirmation.type('Maja19')
+        logPage.mail.type(EMAIL.EXISTING)
+       
+        logPage.submit.click()
+        logPage.pass.then(($input) => {
+            expect($input[0].validationMessage).to.eq('Please match the requested format.')
+                 })
+     })    
+     it('R-12 : Registration with all fields empty ', () => {
+        
+        logPage.submit.click()
+        logPage.firstName.then(($input) => {
             expect($input[0].validationMessage).to.eq('Please fill out this field.')
-            })    
-    })
-
-    it('GA-46 : Register page test - Last name input field: required', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.email.type(fakerEmail)
-        authPage.password.type(fakerpassword)
-        authPage.passwordConfirmation.type(fakerpassword)
-        authPage.checkBox.click()
-        authPage.submit.click()
-        authPage.lastName.then(($input) => {
+                 })
+        
+     })   
+     it('R-13 : Registration with all fields empty and unchecked', () => {
+        logPage.checkBox.click()
+        logPage.submit.click()
+        logPage.firstName.then(($input) => {
             expect($input[0].validationMessage).to.eq('Please fill out this field.')
-            })    
-    })
+                 })
+        
+     })   
 
-    it('GA-54 : Register page test - Email field required', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.password.type(fakerpassword)
-        authPage.passwordConfirmation.type(fakerpassword)
-        authPage.checkBox.click()
-        authPage.submit.click()
-        authPage.email.then(($input) => {
-            expect($input[0].validationMessage).to.eq('Please fill out this field.')
-            })    
-    })
+     it('R-15 : Registration with invalid form of email', () => {
+        logPage.firstName.type(EMAIL.IME)
+        logPage.lastName.type(EMAIL.PREZIME)
+       
+        logPage.pass.type(EMAIL.PASSWORD)
+        logPage.passwordConfirmation.type(EMAIL.PASSWORD)
+        logPage.mail.type('testiranje001gmail.com')
 
-    it('GA-55 : Register page test - Email field format invalid', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type('invalid email')
-        authPage.password.type(fakerpassword)
-        authPage.passwordConfirmation.type(fakerpassword)
-        authPage.checkBox.click()
-        authPage.submit.click()
-    })
+        logPage.submit.click()
+        logPage.mail.then(($input) => {
+            expect($input[0].validationMessage).to.eq("Please include an '@' in the email address. 'testiranje001gmail.com' is missing an '@'.")
+            })
 
-    it('GA-59 : Register page test - Password input field empty', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type(fakerEmail)
-        authPage.passwordConfirmation.type(fakerpassword)
-        authPage.checkBox.click()
-        authPage.submit.click()
-        authPage.password.then(($input) => {
-            expect($input[0].validationMessage).to.eq('Please fill out this field.')
-            })    
-    })
+        })
 
-    it('GA-60 : Register page test - Password Confirm input field empty', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type(fakerEmail)
-        authPage.password.type(fakerpassword)
-        authPage.checkBox.click()
-        authPage.submit.click()
-        authPage.passwordConfirmation.then(($input) => {
-            expect($input[0].validationMessage).to.eq('Please fill out this field.')
-            })    
-    })
+        
+    it('R-2 : Registation', () => {
+                logPage.reg(EMAIL.IME,EMAIL.PREZIME,EMAIL.PASSWORD,EMAIL.PASSWORD,EMAIL.EXISTING)
+                cy.wait('@diaries')
+             })
 
-    it('GA-81 : Confirmation password doesnt match', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type(fakerEmail)
-        authPage.password.type(fakerpassword)
-        authPage.passwordConfirmation.type(fakerEmail)
-        authPage.checkBox.click()
-        authPage.submit.click()
+    it('R-14 : Registation with same credentials', () => {
+     logPage.reg(EMAIL.IME,EMAIL.PREZIME,EMAIL.PASSWORD,EMAIL.PASSWORD,EMAIL.EXISTING)
+    cy.wait('@diaries')
+    logPage.firstName.then(($input) => {
+        expect($input[0].validationMessage).to.eq('User already exists')
+             })
     })
-
-    it('GA-82 : Password form - invalid password', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type(fakerEmail)
-        authPage.password.type('abcdefgh')
-        authPage.passwordConfirmation.type('abcdefgh')
-        authPage.checkBox.click()
-        authPage.submit.click()
-    })
-
-    it('GA-83 : Password form - password has less then 8 characters', () => {
-        //cy.visit('/register')
-        authPage.firstName.type(fakerFirstName)
-        authPage.lastName.type(fakerLastName)
-        authPage.email.type(fakerEmail)
-        authPage.password.type('a1')
-        authPage.passwordConfirmation.type('a1')
-        authPage.checkBox.click()
-        authPage.submit.click()
-    })
-
-    it('GA-84 : User can not register twice', () => {
-        //cy.visit('/register')
-        authPage.firstName.type('test')
-        authPage.lastName.type('test')
-        authPage.email.type(EMAIL.EXISTING)
-        authPage.password.type(EMAIL.PASSWORD)
-        authPage.passwordConfirmation.type(EMAIL.PASSWORD)
-        authPage.checkBox.click()
-        authPage.submit.click()
-        authPage.alert.should('be.visible')
-                        .should('have.text', 'The email has already been taken.')   
-                        .should('have.class', 'alert') 
-    })
-
-    it('GA-14 : Register page positive test - valid data', () => {
-        //cy.visit('/register')
-        //authPage.firstName.type(fakerFirstName)
-        //authPage.lastName.type(fakerLastName)
-        //authPage.email.type(fakerEmail)
-        //authPage.password.type(fakerpassword)
-        //authPage.passwordConfirmation.type(fakerpassword)
-        //authPage.checkBox.click()
-        //authPage.submit.click()
-        authPage.register(fakerFirstName, fakerLastName, fakerEmail, fakerpassword, fakerpassword)
-        cy.wait('@galleries')
-        cy.get('a').contains('Logout').should('be.visible')
-    })
+    
+    it.only('R-16 : Registation user2', () => {
+        logPage.reg('Testerko','Testeric2','Maja19592','Maja19592','testiranje003@gmail.com') 
+        cy.wait('@diaries')
+     })
+    
 
 })

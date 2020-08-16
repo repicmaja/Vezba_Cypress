@@ -1,92 +1,73 @@
 import {EMAIL} from '../fixtures/constants'
-import {authPage} from '../page_object/login.page'
-import {randomEmail} from '../utils/'
+import {logPage} from '../page_object/login.page'
 
-const faker = require('faker');
 
-var email = faker.internet.email();
-var password = faker.internet.password();
 
-describe('Login module', () => {
+describe('Sign in module', () => {
 
   beforeEach(() => {
-    cy.visit('/login')
+    cy.visit('/')
     cy.server()
-    cy.route(Cypress.env('apiUrl') + '/galleries?page=1&term=').as('galleries')
+    cy.route(Cypress.env('apiUrl') + '/diaries?page=1').as('diaries')
   })
 
-  it('GA-19 : Login page layout ', () => {
-//  cy.visit('/')
-    //cy.get('.nav-link').contains('Login').click()
-    authPage.email.should('be.visible')
-    authPage.password.should('be.visible')
-    authPage.submit.should('be.visible')
+  it('SI-1 : Login page layout ', () => {
+
+    logPage.email.should('be.visible')
+    logPage.password.should('be.visible')
+    logPage.login.should('be.visible')
+    logPage.signin.should('be.visible')
+    logPage.register.should('be.visible')
   })
 
-  it('GA-28 : Login - valid data, GA-32 : User is logged  ', () => {
-//  cy.visit('/')
-    //cy.get('.nav-link').contains('Login').click()
-    authPage.login(EMAIL.EXISTING, EMAIL.PASSWORD)
-    cy.wait('@galleries')
-    // authPage.email.type(EMAIL.EXISTING)
-    // authPage.password.type(EMAIL.PASSWORD)
-    // authPage.submit.click()
-    //cy.wait(1000)
-    cy.get('.nav-link').contains('Logout').should('be.visible')    
+  it('SI-2 : Login - valid credentials', () => {
+
+    logPage.log(EMAIL.EXISTING, EMAIL.PASSWORD)
+    cy.wait('@diaries')
+   
   })
 
-  it('GA-22 : Login - invalid data - username ', () => {
-//  cy.visit('/')
-    //cy.get('.nav-link').contains('Login').click()
-    authPage.login(randomEmail(), EMAIL.PASSWORD)
-    //authPage.email.type(fakerEmail)
-    //authPage.password.type(EMAIL.PASSWORD)
-    //authPage.submit.click()
-    authPage.alert.should('be.visible')
+  it('SI-4 : Login - invalid username ', () => {
+
+    logPage.log('repicma@gmail.com', EMAIL.PASSWORD)
+   
+    logPage.alert.should('be.visible')
                     .should('have.text', 'Bad Credentials')   
                     .should('have.class', 'alert') 
   })
 
-  it('Login - invalid data - empty username ', () => {
-        //  cy.visit('/')
-        //cy.get('.nav-link').contains('Login').click()
-        authPage.password.type(EMAIL.PASSWORD)
-        authPage.submit.click()
-        authPage.email.then(($input) => {
+  it('SI - 6 :Login - empty username ', () => {
+       
+        logPage.password.type(EMAIL.PASSWORD)
+        logPage.login.click()
+        logPage.email.then(($input) => {
         expect($input[0].validationMessage).to.eq('Please fill out this field.')
         })
         })
 
-  it('Login - invalid data - empty password ', () => {
-        //cy.visit('/')
-        //cy.get('.nav-link').contains('Login').click()
-        authPage.email.type(EMAIL.EXISTING)
-        authPage.submit.click()
-        authPage.password.then(($input) => {
+  it('SI-7 :Login - empty password ', () => {
+        
+        logPage.email.type(EMAIL.EXISTING)
+        logPage.login.click()
+       logPage.password.then(($input) => {
         expect($input[0].validationMessage).to.eq('Please fill out this field.')
         })
         })    
     
-  it('GA-25 : Login - invalid data - password ', () => {
-//  cy.visit('/')
-    //cy.get('.nav-link').contains('Login').click()
-    authPage.login(EMAIL.EXISTING, fakerpassword)
-    // authPage.email.type(EMAIL.EXISTING)
-    // authPage.password.type(fakerpassword)
-    // authPage.submit.click()
-    authPage.alert.should('be.visible')
+  it('SI-3: Login - invalid password ', () => {
+
+   logPage.log(EMAIL.EXISTING, 'majarepic92')
+   
+    logPage.alert.should('be.visible')
                     .should('have.text', 'Bad Credentials')   
                     .should('have.class', 'alert') 
   })
  
-  it('GA-26 : Login - invalid data - username and password ', () => {
-// cy.visit('/')
-    //cy.get('.nav-link').contains('Login').click()
-    authPage.login(fakerEmail, fakerpassword)
-    // authPage.email.type(fakerEmail)
-    // authPage.password.type(fakerpassword)
-    // authPage.submit.click()
-    authPage.alert.should('be.visible')
+  it('SI-5 : Login - invalid username and password ', () => {
+
+    logPage.log('repicma@gmail.com','majarepic92')
+    
+    logPage.alert.should('be.visible')
                     .should('have.text', 'Bad Credentials')   
                     .should('have.class', 'alert') 
   })
